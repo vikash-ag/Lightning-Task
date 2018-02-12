@@ -1,0 +1,68 @@
+<aura:component >
+	<aura:handler name="init" value="{!this}" action="{!c.Init}"/>
+    
+    <aura:registerEvent name="sampleComponentEvent" type="c:compEvent"/>
+
+    <aura:attribute name="fieldAPI" type="String"/>
+    <aura:attribute name="fieldLabel" type="String"/>
+    <aura:attribute name="fieldType" type="String"/>
+    
+    <aura:attribute name="fieldVal" type="String"/>
+    
+    <aura:attribute name="objRec" type="Object"/>
+    <aura:attribute name="isEdit" type="boolean"/>
+    
+    <aura:attribute name="onChangeVal" type="Object"/>
+    
+    <!--	For Currency	-->
+    <aura:if isTrue="{!v.fieldType == 'currency'}">
+        <aura:if isTrue="{!v.isEdit}">
+            <ui:inputCurrency aura:id="amount" label="{!v.fieldLabel}"  class="field" value="{!v.fieldVal}" 
+                                  change="{!c.onchangemethod}"/>
+        </aura:if>
+        
+        <aura:if isTrue="{!!v.isEdit}">
+            {!v.fieldLabel} : 
+            <ui:outputCurrency aura:id="curr"  value="{!v.fieldVal}"/><br/>
+        </aura:if>
+    </aura:if>
+        
+    <!--	For Name	-->
+    <aura:if isTrue="{!v.fieldType == 'string'}">
+        <aura:if isTrue="{!v.isEdit}">
+            <ui:inputText label="{!v.fieldLabel}" required="true" value="{!v.fieldVal}" change="{!c.onchangemethod}"/>
+        </aura:if>
+        
+        <aura:if isTrue="{!!v.isEdit}">
+            {!v.fieldLabel} : 
+            <ui:outputText value="{!v.fieldVal}"/><br/>
+        </aura:if>
+    </aura:if>
+    
+    <!--	For Date	-->
+    <aura:if isTrue="{!v.fieldType == 'date'}">
+        <aura:if isTrue="{!v.isEdit}">
+			<ui:inputDate label="{!v.fieldLabel}" aura:id="dateField" displayDatePicker="true" value="{!v.fieldVal}"
+                          change="{!c.onchangemethod}"/>
+        </aura:if>
+        
+        <aura:if isTrue="{!!v.isEdit}">
+            {!v.fieldLabel} : 
+            <ui:outputDate value="{!v.fieldVal}"/><br/>
+        </aura:if>
+    </aura:if>
+    
+    <!--	For Email	-->
+    <aura:if isTrue="{!v.fieldType == 'email'}">
+        <aura:if isTrue="{!v.isEdit}">
+            <ui:inputEmail aura:id="email" label="{!v.fieldLabel}" placeholder="{!v.fieldVal}" value="{!v.fieldVal}"
+                           change="{!c.onchangemethod}"/>
+        </aura:if>
+        
+        <aura:if isTrue="{!!v.isEdit}">
+            {!v.fieldLabel} : 
+			<ui:outputEmail value="{!v.fieldVal}"/><br/>
+        </aura:if>
+    </aura:if>
+    
+</aura:component>

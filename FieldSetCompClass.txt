@@ -1,0 +1,87 @@
+public class FieldSetCompClass {
+    
+    public class WrapperClass{
+        @AuraEnabled        
+        public Sobject AccWrapperObj;
+        @AuraEnabled
+        public List<ChildWrapper> lstChildWrapperObj;
+        
+        //constructor
+        public WrapperClass( Sobject AccWrapperObj, List<ChildWrapper> lstChildWrapperObj){
+            this.AccWrapperObj = AccWrapperObj;
+            this.lstChildWrapperObj = lstChildWrapperObj;
+        }
+    }
+    
+    public class ChildWrapper{
+        @AuraEnabled
+        public String FieldType {get;set;}
+        @AuraEnabled
+        public String FieldLabel {get;set;}
+        @AuraEnabled
+        public String FieldApiName {get;set;}
+        //constructor
+        public ChildWrapper(String FieldType, String FieldLabel, String FieldApiName){
+            this.FieldType = FieldType;
+            this.FieldLabel = FieldLabel;
+            this.FieldApiName = FieldApiName;
+        }
+    }    
+    
+  /*  public class MessageDisplayWrapper{
+        @AuraEnabled
+        public String Message {get;set;}
+        @AuraEnabled
+        public Boolean redirect {get;set;}
+        
+        public MessageDisplayWrapper(Boolean redirect, String Message){
+            this.redirect = redirect;
+            this.Message = Message;
+        }
+    }
+*/
+    
+    @AuraEnabled
+    public static WrapperClass getAccountDetails(String strObjectName, String strFieldSetName, String recordId){
+        WrapperClass finalresponse;
+        List<String> lstFieldsToQuery = new List<String>();
+        List<ChildWrapper> lstChildWrapper = new List<ChildWrapper>();
+        
+        //Get the fields from FieldSet
+        Schema.SObjectType SObjectTypeObj = Schema.getGlobalDescribe().get(strObjectName);
+        Schema.DescribeSObjectResult DescribeSObjectResultObj = SObjectTypeObj.getDescribe();            
+        Schema.FieldSet fieldSetObj = DescribeSObjectResultObj.FieldSets.getMap().get(strFieldSetName);
+        system.debug('fieldSetObj===========>' +fieldSetObj);
+        for( Schema.FieldSetMember eachFieldSetMember : fieldSetObj.getFields() ){
+            String dataType = String.valueOf(eachFieldSetMember.getType()).toLowerCase();
+            
+            if(dataType == 'datetime'){
+                dataType = 'date';
+            }
+            //Create a wrapper instance and store label, fieldname and type.
+            ChildWrapper newChildWrapperObj = new ChildWrapper( String.valueOf(eachFieldSetMember.getType()).toLowerCase() , 
+                                                               String.valueOf(eachFieldSetMember.getLabel()), 
+                                                               String.valueOf(eachFieldSetMember.getFieldPath()) );
+            lstChildWrapper.add(newChildWrapperObj);
+            lstFieldsToQuery.add(String.valueOf(eachFieldSetMember.getFieldPath()));
+        }
+        System.debug('>>>>>lstFieldsToQuery>>>>>>'+lstFieldsToQuery);
+        
+        //Form an SOQL to fetch the data - Set the wrapper instance and return as response
+        String queryyy = 'SELECT Id, ' + String.join(lstFieldsToQuery, ',') + ' FROM ' +strObjectName+ ' Where Id =: recordId';
+        System.debug('>>>>>Queryyyy>>>>>>'+queryyy);
+        Sobject objRec = Database.query(queryyy);
+        
+        finalresponse = new WrapperClass(objRec,lstChildWrapper);
+        return finalresponse;
+    }
+    
+    @AuraEnabled
+    public static void UpdateRecord(Sobject strObjectVal){
+        system.debug('before sObjRecValue===========>>' +strObjectVal);
+        //system.debug('sObjRecValue===========>>' +strInnerWrapper);
+        update strObjectVal;
+        system.debug('s object record is updated......');
+		System.debug('updated sobject value====>' +strObjectVal);       
+    }
+}

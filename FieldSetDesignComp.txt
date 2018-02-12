@@ -1,0 +1,4 @@
+<design:component >
+    <design:attribute name="sobjName" description="Please provide the Object API Name"/>
+    <design:attribute name="fieldSetName" description="Please provide the field-set API Name"/>
+</design:component>

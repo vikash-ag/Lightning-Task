@@ -1,0 +1,7 @@
+<aura:event type="COMPONENT" description="Event template" access="global">
+    
+    <aura:attribute name="eFieldVal" type="String" access="global"/>
+    <aura:attribute name="eApi" type="String" access="global"/>
+    <!-- <aura:attribute name="eObjVal" type="Object"/>-->
+
+</aura:event>

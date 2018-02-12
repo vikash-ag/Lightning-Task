@@ -1,0 +1,49 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" 
+                controller="FieldSetCompClass">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+   	<aura:handler name="sampleComponentEvent" event="c:compEvent" action="{!c.handleSampleEvent}"/>
+
+    <aura:attribute name="recordId" type="Id"/>
+    
+    <aura:attribute name="sobjName" type="String" />
+    <aura:attribute name="fieldSetName" type="String"/>
+    
+    <aura:attribute name="MainWrapper" type="object"/>
+    <aura:attribute name="isEditParent" type="boolean" default="false"/>
+    
+    <aura:if isTrue="{!v.MainWrapper != NULL}">
+        <aura:iteration items="{!v.MainWrapper.lstChildWrapperObj}" var="fieldInfo">
+            <c:childValToDisplay fieldAPI="{!fieldInfo.FieldApiName}" fieldLabel="{!fieldInfo.FieldLabel}"
+                                 fieldType="{!fieldInfo.FieldType}" isEdit="{!v.isEditParent}"
+                                 objRec="{!v.MainWrapper.AccWrapperObj}"/>
+        </aura:iteration>
+        
+        <aura:if isTrue="{!!v.isEditParent}">
+        	<lightning:button variant="brand" label="Edit" onclick="{!c.editRec }" />
+        </aura:if>		
+        
+        <aura:if isTrue="{!v.isEditParent}">
+			<lightning:button variant="brand" label="Save" onclick="{!c.saveRec }" />        
+            <lightning:button variant="brand" label="Cancel" onclick="{!c.cancelRec}" />        
+        </aura:if>
+	</aura:if>
+    
+</aura:component>
+
+
+
+
+
+
+<!--<aura:attribute name="fieldSet" type="String"/>
+    <aura:attribute name="AccountRecord" type="Account"/>
+    
+    <div class="fields">        
+        {!v.AccountRecord.Id}
+        {!v.AccountRecord.Name}
+        {!v.AccountRecord.Email__c}
+        
+    </div>
+-->

@@ -1,0 +1,38 @@
+({
+	Init : function(component, event, helper) {
+		var objVal = component.get("v.objRec");
+        console.log("objVal======>"+objVal);
+        
+        var api = component.get("v.fieldAPI");
+        console.log("api======>"+api);
+
+        var fieldValue = objVal[api];
+        console.log("field Value======>"+fieldValue);
+        
+        component.set("v.fieldVal", fieldValue);
+        
+        // $A.enqueueAction(action);
+	},
+    
+    onchangemethod : function(component, event, helper){
+        var ocFieldVal = component.get("v.fieldVal");
+        var ocApi = component.get("v.fieldAPI");
+        var ocObjVal = component.get("v.objRec"); 
+        
+        console.log("===ocFieldVal=====>", ocFieldVal);
+        console.log("===ocApi=====>", ocApi);
+        console.log("===ocObjVal=====>", ocObjVal);
+        
+        var compEvent = component.getEvent("sampleComponentEvent");
+        compEvent.setParams({
+            				"eFieldVal" : ocFieldVal,
+            				"eApi" :  ocApi,
+            				"eObjVal" :  ocObjVal
+        					});
+        compEvent.fire();
+        console.log("change event is fired+++++>>>>");    
+	},
+    
+    /*
+    */
+})
